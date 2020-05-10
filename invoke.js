@@ -30,18 +30,10 @@ async function main() {
 
         // Submit the 'createCar' transaction to the smart contract, and wait for it
         // to be committed to the ledger.
-        /* CONSENTIO chaincode
-        peer chaincode invoke -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n CHAINCODE_NAME -c \
-            '{"Args":["updateConsent", "2", "g","all", "20150101", "20160101","101", "hippa"]}'
-        peer chaincode invoke -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n CHAINCODE_NAME -c \
-            '{"Args":["updateRole","hippa", "all", "dc1","r"]}'
-        peer chaincode query -C $CHANNEL_NAME -n CHAINCODE_NAME -c \
-            '{"Args":["queryConsent", "{\"selector\":{}, \"use_index\":[\"_design/indexConsentDoc\", \"indexConsent\"]}"]}'
-        peer chaincode invoke -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n CHAINCODE_NAME -c \
-            '{"Args":["accessConsent","all", "20150101", "20160101","101", "hippa", "dc1"]}'
-         */
-        await contract.submitTransaction("accessConsent", "all", "20150101", "20160101", "101", "hippa", "dc1");
-        console.log('Transaction has been submitted');
+        const response = await contract.submitTransaction("updateConsent", "2", "g", "all", "20150101", "20160101", "101", "hippa");
+        // const response = await contract.submitTransaction("updateRole", "hippa", "all", "dc1", "r");
+        // const response = await contract.submitTransaction("accessConsent", "all", "20150101", "20160101", "101", "hippa", "dc1");
+        console.log(`Transaction has been submitted. ${response.toString('utf8')}`);
 
         await gateway.disconnect();
 

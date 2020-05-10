@@ -1,8 +1,7 @@
 # consentio-client
 
 Client application for experiments reproduction using Node.js Fabric SDK.
-
-https://cloud.ibm.com/docs/blockchain?topic=blockchain-ibp-console-app#ibp-console-app-enroll
+It connects to [IBM Blockchain Platform network](https://cloud.ibm.com/docs/blockchain?topic=blockchain-ibp-console-app).
 
 ## Run
 
@@ -14,18 +13,67 @@ Successfully enrolled client "user1" and imported it into the wallet
 ```
 
 [invoke.js](./invoke.js)
+```js
+await contract.evaluateTransaction("updateConsent", "2", "g", "all", "20150101", "20160101", "101", "hippa");
+```
+
 ```bash
-hg@hvvka ~/p/_/m/consentio-client> node invoke.js                                                                                                                                           master!+
-2020-05-09T21:45:46.193Z - warn: [DiscoveryEndorsementHandler]: _build_endorse_group_member >> G0:0 - endorsement failed - Error: Watchdog has not approved role given for the data consumer
-2020-05-09T21:45:46.195Z - error: [DiscoveryEndorsementHandler]: _endorse - endorsement failed::Error: Endorsement has failed
-    at DiscoveryEndorsementHandler._endorse (/Users/hg/pwr/_w8/mgr/consentio-client/node_modules/fabric-client/lib/impl/DiscoveryEndorsementHandler.js:185:19)
-    at async Channel.sendTransactionProposal (/Users/hg/pwr/_w8/mgr/consentio-client/node_modules/fabric-client/lib/Channel.js:2801:22)
-    at async Transaction.submit (/Users/hg/pwr/_w8/mgr/consentio-client/node_modules/fabric-network/lib/transaction.js:183:19)
-    at async main (/Users/hg/pwr/_w8/mgr/consentio-client/invoke.js:43:9)
-Failed to submit transaction: Error: Endorsement has failed
+hg@hvvka ~/p/_/m/consentio-client> node invoke.js                                                                                                                                          1 master!
+Transaction has been submitted.
 ```
 
 [query.js](./query.js)
-```bash
-
+```js
+await contract.evaluateTransaction("queryConsent", "{\"selector\":{}, \"use_index\":[\"_design/indexConsentDoc\", \"indexConsent\"]}");
 ```
+
+```bash
+hg@hvvka ~/p/_/m/consentio-client> node query.js                                                                                                                                             master!
+[{"Key":"101all2015010120160101hippa", "Record":{"u_ids":{"2":1}}}]
+```
+
+## Consentio chaincode
+
+### World state design
+
+```json
+{ 
+  resource_id|watchdog_id|role_id|time_id : [ind_id_1,..., ind_id_n]
+}
+```
+
+value = a list of individual IDs giving consent to the data specified in the key (i.e., the given temporal fragment of a the given resource being available to the given role approved by the given watchdog)
+
+### Operations
+
+- updateRole (watchdog_id, role_id, data_consumer_id, action)
+
+    ```bash
+    peer chaincode invoke -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n CHAINCODE_NAME -c \
+        '{"Args":["updateRole", "hippa", "all", "dc1", "r"]}'
+    ```
+  
+    action: `r` or `g`
+
+- queryConsent (query_string)
+
+    ```bash
+    peer chaincode query -C $CHANNEL_NAME -n CHAINCODE_NAME -c \
+        '{"Args":["queryConsent", "{\"selector\":{}, \"use_index\":[\"_design/indexConsentDoc\", \"indexConsent\"]}"]}'
+    ```
+
+- updateConsent (patient_id, action, role_id, start_date, end_date, arr[column ids], watchdog_id)
+
+    ```bash
+    peer chaincode invoke -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n CHAINCODE_NAME -c \
+        '{"Args":["updateConsent", "2", "g","all", "20150101", "20160101","101", "hippa"]}'
+    ```
+
+- accessConsent (role_id, start_date, end_date, column_ids, watchdog_id, data_consumer_id)
+
+    ```bash
+    peer chaincode invoke -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n CHAINCODE_NAME -c \
+        '{"Args":["accessConsent", "all", "20150101", "20160101", "101", "hippa", "dc1"]}'
+    ```
+
+- initialize (column_id, action, role_id, start_date, end_date, arr[patient ids], watchdog_id)

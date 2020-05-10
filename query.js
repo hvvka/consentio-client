@@ -27,13 +27,15 @@ async function main() {
         const network = await gateway.getNetwork('channel1');
 
         const contract = network.getContract('consentio');
-        // const response = await contract.evaluateTransaction("queryConsent", "{\"selector\":{}, \"use_index\":[\"_design/indexConsentDoc\", \"indexConsent\"]}");
-        const response = await contract.evaluateTransaction("accessConsent", "all", "20150101", "20160101", "101", "hippa", "dc1");
+
+        // const response = await contract.evaluateTransaction("updateConsent", "2", "g", "all", "20150101", "20160101", "101", "hippa");
+        // const response = await contract.evaluateTransaction("updateRole", "hippa", "all", "dc1", "r");
+        const response = await contract.evaluateTransaction("queryConsent", "{\"selector\":{}, \"use_index\":[\"_design/indexConsentDoc\", \"indexConsent\"]}");
+        // const response = await contract.evaluateTransaction("accessConsent", "all", "20150101", "20160101", "101", "hippa", "dc1");
 
         console.log(response.toString('utf8'));
 
         await gateway.disconnect();
-
     } catch (error) {
         console.error(`Failed to query chaincode: ${error}`);
         process.exit(1);

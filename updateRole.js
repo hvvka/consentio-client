@@ -30,9 +30,7 @@ async function main() {
 
         // Submit the 'createCar' transaction to the smart contract, and wait for it
         // to be committed to the ledger.
-        const response = await contract.submitTransaction("updateConsent", "2", "g", "all", "20150101", "20160101", "101", "hippa");
-        // const response = await contract.submitTransaction("updateRole", "hippa", "all", "dc1", "r");
-        // const response = await contract.submitTransaction("accessConsent", "all", "20150101", "20160101", "101", "hippa", "dc1");
+        const response = await contract.submitTransaction("updateRole", "hippa", "all", "dc1", "r");
         console.log(`Transaction has been submitted. ${response.toString('utf8')}`);
 
         await gateway.disconnect();

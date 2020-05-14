@@ -5,8 +5,13 @@ const fs = require('fs');
 const path = require('path');
 
 async function main() {
-    try {
+    async function queryConsent(contract) {
+        return contract.evaluateTransaction("queryConsent",
+            "{\"selector\":{}, \"use_index\":[\"_design/indexConsentDoc\", \"indexConsent\"]}"
+        );
+    }
 
+    try {
         const ccpPath = path.resolve(__dirname, 'connection.json');
         const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
 
@@ -27,13 +32,11 @@ async function main() {
         const network = await gateway.getNetwork('channel1');
 
         const contract = network.getContract('consentio');
-
-        // const response = await contract.evaluateTransaction("updateConsent", "2", "g", "all", "20150101", "20160101", "101", "hippa");
-        // const response = await contract.evaluateTransaction("updateRole", "hippa", "all", "dc1", "r");
-        const response = await contract.evaluateTransaction("queryConsent", "{\"selector\":{}, \"use_index\":[\"_design/indexConsentDoc\", \"indexConsent\"]}");
-        // const response = await contract.evaluateTransaction("accessConsent", "all", "20150101", "20160101", "101", "hippa", "dc1");
-
+        const t0 = new Date().getTime();
+        const response = await queryConsent(contract);
+        const t1 = new Date().getTime();
         console.log(response.toString('utf8'));
+        console.log("Execution time: " + (t1 - t0) + " ms");
 
         await gateway.disconnect();
     } catch (error) {

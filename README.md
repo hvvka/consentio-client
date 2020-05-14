@@ -12,23 +12,23 @@ Wallet path: /Users/hg/pwr/_w8/mgr/consentio-client/wallet
 Successfully enrolled client "user1" and imported it into the wallet
 ```
 
-[invoke.js](./invoke.js)
+[updateConsent.js](updateConsent.js)
 ```js
-await contract.evaluateTransaction("updateConsent", "2", "g", "all", "20150101", "20160101", "101", "hippa");
+await contract.submitTransaction("updateConsent", "2", "g", "all", "20150101", "20160101", "101", "hippa");
 ```
 
 ```bash
-hg@hvvka ~/p/_/m/consentio-client> node invoke.js                                                                                                                                          1 master!
+hg@hvvka ~/p/_/m/consentio-client> node updateConsent.js                                                                                                                                          1 master!
 Transaction has been submitted.
 ```
 
-[query.js](./query.js)
+[queryConsent.js](queryConsent.js)
 ```js
 await contract.evaluateTransaction("queryConsent", "{\"selector\":{}, \"use_index\":[\"_design/indexConsentDoc\", \"indexConsent\"]}");
 ```
 
 ```bash
-hg@hvvka ~/p/_/m/consentio-client> node query.js                                                                                                                                             master!
+hg@hvvka ~/p/_/m/consentio-client> node queryConsent.js                                                                                                                                             master!
 [{"Key":"101all2015010120160101hippa", "Record":{"u_ids":{"2":1}}}]
 ```
 
@@ -53,7 +53,7 @@ value = a list of individual IDs giving consent to the data specified in the key
         '{"Args":["updateRole", "hippa", "all", "dc1", "r"]}'
     ```
   
-    action: `r` or `g`
+    action: `r` (revoke) or `g` (grant)
 
 - queryConsent (query_string)
 
@@ -66,7 +66,7 @@ value = a list of individual IDs giving consent to the data specified in the key
 
     ```bash
     peer chaincode invoke -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C $CHANNEL_NAME -n CHAINCODE_NAME -c \
-        '{"Args":["updateConsent", "2", "g","all", "20150101", "20160101","101", "hippa"]}'
+        '{"Args":["updateConsent", "2", "g", "all", "20150101", "20160101", "101", "hippa"]}'
     ```
 
 - accessConsent (role_id, start_date, end_date, column_ids, watchdog_id, data_consumer_id)

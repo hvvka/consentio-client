@@ -22,20 +22,20 @@ async function main() {
         console.log(`Wallet path: ${walletPath}`);
 
         // Check to see if we've already enrolled the admin user.
-        const userExists = await wallet.exists('user1');
+        const userExists = await wallet.exists('user4');
         if (userExists) {
-            console.log('An identity for "user1" already exists in the wallet');
+            console.log('An identity for "user4" already exists in the wallet');
             return;
         }
 
         // Enroll the admin user, and import the new identity into the wallet.
         const enrollment = await ca.enroll({enrollmentID: 'application', enrollmentSecret: 'applicationpw'});
         const identity = X509WalletMixin.createIdentity('org1msp', enrollment.certificate, enrollment.key.toBytes());
-        await wallet.import('user1', identity);
-        console.log('Successfully enrolled client "user1" and imported it into the wallet');
+        await wallet.import('user4', identity);
+        console.log('Successfully enrolled client "user4" and imported it into the wallet');
 
     } catch (error) {
-        console.error(`Failed to enroll "user1": ${error}`);
+        console.error(`Failed to enroll "user4": ${error}`);
         process.exit(1);
     }
 }

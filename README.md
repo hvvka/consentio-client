@@ -77,3 +77,9 @@ value = a list of individual IDs giving consent to the data specified in the key
     ```
 
 - initialize (column_id, action, role_id, start_date, end_date, arr[patient ids], watchdog_id)
+
+## Reproduction
+
+1. With [enrollUser.js](./enrollUser.js) enroll 4 users: `user1`, `user2`, `user3`, `user4`.
+
+2. 

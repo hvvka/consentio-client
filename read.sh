@@ -1,18 +1,21 @@
 #!/bin/bash
 
-TARGET_TRANSACTIONS=100000
+TARGET_TRANSACTIONS=4000
+BLOCK_SIZE=20
 
-for ((i = 0; i < TARGET_TRANSACTIONS / 100; i++)); do
+date
 
-  for ((thread = 0; thread < 100; thread += 4)); do
+for ((i = 0; i < TARGET_TRANSACTIONS / BLOCK_SIZE; i++)); do
+
+  for ((thread = 0; thread < BLOCK_SIZE; thread += 4)); do
     # args: [user, identity, start_date]
-    node queryConsent.js user1 0 $((i * 100 + thread)) &
+    node queryConsent.js user1 &
     pids[${thread}]=$!
-    node queryConsent.js user2 0 $((i * 100 + thread + 1)) &
+    node queryConsent.js user2 &
     pids[$((thread + 1))]=$!
-    node queryConsent.js user3 0 $((i * 100 + thread + 2)) &
+    node queryConsent.js user3 &
     pids[$((thread + 2))]=$!
-    node queryConsent.js user4 0 $((i * 100 + thread + 3)) &
+    node queryConsent.js user4 &
     pids[$((thread + 3))]=$!
   done
 
@@ -22,3 +25,5 @@ for ((i = 0; i < TARGET_TRANSACTIONS / 100; i++)); do
   done
 
 done
+
+date

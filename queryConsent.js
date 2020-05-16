@@ -20,17 +20,17 @@ async function main(args) {
         };
         await gateway.connect(ccp, {
             wallet,
-            identity: 'user1',
+            identity: args[0],
             discovery: {enabled: true, asLocalhost: false}, ...connectOptions
         });
         const network = await gateway.getNetwork('channel2');
 
         const contract = network.getContract('consentio');
-        const t0 = new Date().getTime();
-        const response = await queryConsent(contract);
-        const t1 = new Date().getTime();
-        console.log(response.toString('utf8'));
-        console.log("Execution time: " + (t1 - t0) + " ms");
+        // const t0 = new Date().getTime();
+        await queryConsent(contract);
+        // const t1 = new Date().getTime();
+        // console.log(response.toString('utf8'));
+        // console.log("Execution time: " + (t1 - t0) + " ms");
 
         await gateway.disconnect();
     } catch (error) {
@@ -41,10 +41,13 @@ async function main(args) {
 
 async function queryConsent(contract) {
     return contract.evaluateTransaction("queryConsent",
-        "{\"selector\":{}, \"use_index\":[\"_design/indexConsentDoc\", \"indexConsent\"]}"
-    );
+        "{\n" +
+        "   \"selector\": {},\n" +
+        "   \"limit\": 100,\n" +
+        "   \"use_index\": [\"_design/indexConsentDoc\", \"indexConsent\"]}" +
+        "}");
 }
 
-// args: [user, ]
-main();
+// args: [user]
+main(process.argv.slice(2));
 

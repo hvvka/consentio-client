@@ -12,7 +12,7 @@
 
 TARGET_KEY_SPACE=4000
 BLOCK_SIZE=20
-UPDATED_ID=$1
+UPDATED_ID=${1:0}
 
 echo "START $(date +%FT%T)"
 
@@ -30,7 +30,7 @@ for ((i = 0; i < TARGET_KEY_SPACE / BLOCK_SIZE; i++)); do
     pids[$((thread + 3))]=$!
   done
 
-#  echo $i
+  echo $i
   # wait for all pids
   for pid in ${pids[*]}; do
     wait $pid

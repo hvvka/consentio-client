@@ -13,4 +13,4 @@ touch $LOG_FILE
     echo "READ ${i} values"
     ./read.sh
   done
-} >>$LOG_FILE
+} >> $LOG_FILE

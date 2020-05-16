@@ -27,6 +27,7 @@ async function main(args) {
 
         const contract = network.getContract('consentio');
         // const t0 = new Date().getTime();
+        // const response =
         await queryConsent(contract);
         // const t1 = new Date().getTime();
         // console.log(response.toString('utf8'));
@@ -43,7 +44,7 @@ async function queryConsent(contract) {
     return contract.evaluateTransaction("queryConsent",
         "{\n" +
         "   \"selector\": {},\n" +
-        "   \"limit\": 100,\n" +
+        "   \"skip\": 3900,\n" +
         "   \"use_index\": [\"_design/indexConsentDoc\", \"indexConsent\"]}" +
         "}");
 }

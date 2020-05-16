@@ -1,9 +1,36 @@
 # consentio-client
 
-Client application for experiments reproduction using Node.js Fabric SDK.
+Client application for experiments reproduction of [_Consentio_ Consent Management System (CMS)](https://arxiv.org/abs/1910.07110),
+using Hyperledger Fabric v1.4 via Node.js Fabric SDK.
 It connects to [IBM Blockchain Platform network](https://cloud.ibm.com/docs/blockchain?topic=blockchain-ibp-console-app).
 
-## Run
+## Reproduction
+
+1. Enroll 4 users (`user1`, `user2`, `user3`, `user4`) into local wallet
+with [enroll_users.sh](./enroll_users.sh).
+
+2. Reproduce WRITE bar plot (Figure 7 in Consentio article):
+
+    ```bash
+    $ ./write.sh <individual_id>
+    ``` 
+   
+3. Reproduce READ bar plot (Figure 6 in Consentio article):
+
+    ```bash
+    $ ./read.sh 
+    ``` 
+
+**Automate above with:**
+
+```bash
+# all args optional
+$ ./exp.sh <from id> <to id>
+```
+
+Feel free to change volumes in both scripts accordingly to the blockchain network efficiency level. 
+
+## Using some scripts independently
 
 [enrollUser.js](./enrollUser.js)
 ```bash
@@ -77,9 +104,3 @@ value = a list of individual IDs giving consent to the data specified in the key
     ```
 
 - initialize (column_id, action, role_id, start_date, end_date, arr[patient ids], watchdog_id)
-
-## Reproduction
-
-1. With [enrollUser.js](./enrollUser.js) enroll 4 users: `user1`, `user2`, `user3`, `user4`.
-
-2. 

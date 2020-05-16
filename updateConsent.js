@@ -31,9 +31,4 @@ async function main(args) {
 
 
 // args: [user, identity, start_date]
-
-// const t0 = new Date().getTime();
 main(process.argv.slice(2));
-// const t1 = new Date().getTime();
-// console.log("Execution time: " + (t1 - t0) + " ms");
-

@@ -9,7 +9,7 @@ const ccpPath = path.resolve(__dirname, 'connection.json');
 const ccpJSON = fs.readFileSync(ccpPath, 'utf8');
 const ccp = JSON.parse(ccpJSON);
 
-async function main() {
+async function main(args) {
     try {
 
         // Create a new CA client for interacting with the CA.
@@ -22,23 +22,23 @@ async function main() {
         console.log(`Wallet path: ${walletPath}`);
 
         // Check to see if we've already enrolled the admin user.
-        const userExists = await wallet.exists('user4');
+        const userExists = await wallet.exists(args[0]);
         if (userExists) {
-            console.log('An identity for "user4" already exists in the wallet');
+            console.log(`An identity for "${args[0]}" already exists in the wallet`);
             return;
         }
 
         // Enroll the admin user, and import the new identity into the wallet.
         const enrollment = await ca.enroll({enrollmentID: 'application', enrollmentSecret: 'applicationpw'});
         const identity = X509WalletMixin.createIdentity('org1msp', enrollment.certificate, enrollment.key.toBytes());
-        await wallet.import('user4', identity);
-        console.log('Successfully enrolled client "user4" and imported it into the wallet');
+        await wallet.import(args[0], identity);
+        console.log(`Successfully enrolled client "${args[0]}" and imported it into the wallet`);
 
     } catch (error) {
-        console.error(`Failed to enroll "user4": ${error}`);
+        console.error(`Failed to enroll "${args[0]}": ${error}`);
         process.exit(1);
     }
 }
 
-main();
-
+// args: [user]
+main(process.argv.slice(2));

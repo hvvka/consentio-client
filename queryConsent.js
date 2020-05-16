@@ -50,4 +50,3 @@ async function queryConsent(contract) {
 
 // args: [user]
 main(process.argv.slice(2));
-

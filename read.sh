@@ -1,9 +1,17 @@
 #!/bin/bash
 
+# Runs READ action (queryConsent) on the whole world state
+
+# world state key space (transactions) = 4000
+# block size = 20
+# total added blocks = 200
+# 20 threads; 5 threads for each client
+# queried key size = 4000 (4000 repetitions)
+
 TARGET_TRANSACTIONS=4000
 BLOCK_SIZE=20
 
-date
+echo "START $(date +%FT%T)"
 
 for ((i = 0; i < TARGET_TRANSACTIONS / BLOCK_SIZE; i++)); do
 
@@ -19,6 +27,7 @@ for ((i = 0; i < TARGET_TRANSACTIONS / BLOCK_SIZE; i++)); do
     pids[$((thread + 3))]=$!
   done
 
+#  echo $i
   # wait for all pids
   for pid in ${pids[*]}; do
     wait $pid
@@ -26,4 +35,4 @@ for ((i = 0; i < TARGET_TRANSACTIONS / BLOCK_SIZE; i++)); do
 
 done
 
-date
+echo "END $(date +%FT%T)"

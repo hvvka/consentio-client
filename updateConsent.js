@@ -15,7 +15,7 @@ async function main(args) {
         const gateway = new Gateway();
         await gateway.connect(ccp, {wallet, identity: args[0], discovery: {enabled: true, asLocalhost: false}});
 
-        const network = await gateway.getNetwork('channel1');
+        const network = await gateway.getNetwork('channel2');
         const contract = network.getContract('consentio');
 
         await contract.submitTransaction("updateConsent",

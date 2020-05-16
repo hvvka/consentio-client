@@ -4,13 +4,7 @@ const {Gateway, FileSystemWallet, DefaultQueryHandlerStrategies} = require('fabr
 const fs = require('fs');
 const path = require('path');
 
-async function main() {
-    async function queryConsent(contract) {
-        return contract.evaluateTransaction("queryConsent",
-            "{\"selector\":{}, \"use_index\":[\"_design/indexConsentDoc\", \"indexConsent\"]}"
-        );
-    }
-
+async function main(args) {
     try {
         const ccpPath = path.resolve(__dirname, 'connection.json');
         const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
@@ -29,7 +23,7 @@ async function main() {
             identity: 'user1',
             discovery: {enabled: true, asLocalhost: false}, ...connectOptions
         });
-        const network = await gateway.getNetwork('channel1');
+        const network = await gateway.getNetwork('channel2');
 
         const contract = network.getContract('consentio');
         const t0 = new Date().getTime();
@@ -45,5 +39,12 @@ async function main() {
     }
 }
 
+async function queryConsent(contract) {
+    return contract.evaluateTransaction("queryConsent",
+        "{\"selector\":{}, \"use_index\":[\"_design/indexConsentDoc\", \"indexConsent\"]}"
+    );
+}
+
+// args: [user, ]
 main();
 
